@@ -14,8 +14,8 @@ app.use(express.urlencoded({
 app.use(express.json());
 app.use(express.static("public"));
 
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoosescraper";
-mongoose.connect(MONGODB_URI);
+var MONGODB_URI = false && "mongodb://heroku_x10zz246:MYfLL99Uk1Dln0nx@ds019678.mlab.com:19678/heroku_x10zz246" || "mongodb://localhost/mongoosescraper";
+mongoose.connect(MONGODB_URI, {useNewUrlParser:true});
 
 // ROUTES
 
@@ -39,7 +39,7 @@ app.get("/scrape", function (req, res) {
           console.log(err);
         });
     });
-    res.send("Scrape Complete");
+    res.send("Scrape Complete"); // UPDATE THIS TO BE NOT SHITTY
   });
 });
 
@@ -68,20 +68,21 @@ app.get("/articles/:id", function (req, res) {
 
 app.post("/articles/:id", function (req, res) {
   db.Note.create(req.body)
-    .then(function (dbNote) {
-      return db.Article.findOneAndUpdate({
-        _id: req.params.id
-      }, {
-        note: dbNote._id
-      }, {
-        new: true
-      });
-    })
+    // .then(function (dbNote) {
+    //   return db.Article.findOneAndUpdate({
+    //     _id: req.params.id
+    //   }, {
+    //     note: dbNote._id
+    //   }, {
+    //     new: true
+    //   });
+    // })
     .then(function (dbArticle) {
       res.json(dbArticle);
+      console.log('======POST RESPONSE======');
+      console.log(dbArticle);
     })
     .catch(function (err) {
-
       res.json(err);
     });
 });
