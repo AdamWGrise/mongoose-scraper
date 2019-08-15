@@ -4,6 +4,8 @@ var mongoose = require("mongoose");
 var axios = require("axios");
 var cheerio = require("cheerio");
 var db = require("./models");
+var exphbs = require("express-handlebars");
+var bodyParser = require("body-parser");
 var app = express();
 var PORT = process.env.PORT || 3000;
 
@@ -13,23 +15,69 @@ app.use(express.urlencoded({
 }));
 app.use(express.json());
 app.use(express.static("public"));
+app.engine("handlebars", exphbs({
+  defaultLayout: "main"
+}));
+app.set("view engine", "handlebars");
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 
-var MONGODB_URI = false && "mongodb://heroku_x10zz246:MYfLL99Uk1Dln0nx@ds019678.mlab.com:19678/heroku_x10zz246" || "mongodb://localhost/mongoosescraper";
-mongoose.connect(MONGODB_URI, {useNewUrlParser:true});
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/mongoosescraper", {
+  useNewUrlParser: true
+});
 
 // ROUTES
+
+app.get("/", function (req, res) {
+  db.Article.find({})
+    .then(function (dbArticle) {
+      console.log(dbArticle);
+      res.render("index", {
+        articles: dbArticle
+      });
+    })
+    .catch(function (err) {
+      res.json(err);
+    });
+});
 
 app.get("/scrape", function (req, res) {
   axios.get("https://www.nintendolife.com/news").then(function (response) {
     var $ = cheerio.load(response.data);
-    $(".heading").each(function (i, element) {
+    $(".item-wrap").each(function (i, element) {
       var result = {};
       result.title = $(this)
+        .children(".info")
+        .children(".info-wrap")
+        .children(".heading")
         .children("a")
-        .text();
-      result.link = $(this)
+        .children(".title").text();
+      console.log(result.title);
+      result.category = $(this)
+        .children(".info")
+        .children(".info-wrap")
+        .children(".heading")
         .children("a")
-        .attr("href");
+        .children(".category").text();
+      console.log(result.title);
+      result.description = $(this)
+        .children(".info")
+        .children(".info-wrap")
+        .children(".text").text();
+      console.log(result.description);
+      result.image = $(this)
+        .children(".image")
+        .children(".img")
+        .children("img").attr("src");
+      console.log(result.image);
+      result.link = "https://www.nintendolife.com/";
+      result.link += $(this)
+        .children(".info")
+        .children(".info-wrap")
+        .children(".heading")
+        .children("a").attr("href");
+      console.log(result.link);
 
       db.Article.create(result)
         .then(function (dbArticle) {
@@ -39,7 +87,7 @@ app.get("/scrape", function (req, res) {
           console.log(err);
         });
     });
-    res.send("Scrape Complete"); // UPDATE THIS TO BE NOT SHITTY
+    res.send("Scrape Complete"); // UPDATE THIS TO BE NOT UGLY
   });
 });
 

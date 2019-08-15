@@ -1,0 +1,30 @@
+body {
+    background-color: #122;
+    color:#eee;
+}
+
+.jumbotron {
+    background-color: #244;
+}
+
+.card {
+    max-width:16rem;
+    display:inline-flex;
+}
+
+.card-img-top {
+    max-height:144px;
+}
+
+.card-text {
+    font-size:0.8rem;
+}
+
+.category {
+    color: #aaa;
+}
+
+#article-cards {
+    display: inline-block;
+    overflow: auto;
+}
