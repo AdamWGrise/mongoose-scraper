@@ -15,6 +15,17 @@ $("#scrape").on("click", function(e) {
   })
 });
 
+$("#clear").on("click", function(e) {
+  e.preventDefault();
+  $.ajax({
+    method: "GET",
+    url: "/clear"
+  })
+  .then(function() {
+    window.location.replace("/");
+  })
+});
+
 $(".save-article").on("click", function(e) {
   e.preventDefault();
   var thisId = $(this).parents(".card").data("id");
