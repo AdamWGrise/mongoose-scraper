@@ -4,6 +4,7 @@
         <div class="col-12">
             <div class="jumbotron">
                 <h1>NintendoLife Scraper</h1>
+                <button class="btn btn-danger" id="scrape">Scrapey scrapey</button>
             </div>
         </div>
     </div>
@@ -16,8 +17,11 @@
                     <img class="card-img-top" src="{{this.image}}" alt="cardImg">
                     <div class="card-body">
                         <h6 class="card-title"><span class="category">({{this.category}})</span> {{this.title}}</h6>
+                        <h6>Saved: {{this.saved}}</h6>
                         <p class="card-text">{{this.description}}</p>
-                        <a href="{{this.link}}" target="_blank" class="btn btn-secondary btn-sm">Visit Article</a>
+                        <a href="{{this.link}}" target="_blank" class="btn btn-secondary btn-sm">Visit</a>
+                        <a href="/" class="btn btn-secondary btn-sm save-article">Save</a>
+                        <a href="/" class="btn btn-secondary btn-sm unsave-article">Unsave</a>
                     </div>
                 </div>
                 {{/each}}

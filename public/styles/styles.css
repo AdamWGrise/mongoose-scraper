@@ -25,6 +25,7 @@ body {
 }
 
 #article-cards {
+    text-align:center;
     display: inline-block;
     overflow: auto;
 }

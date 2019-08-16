@@ -24,7 +24,9 @@ app.use(bodyParser.urlencoded({
 }));
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/mongoosescraper", {
-  useNewUrlParser: true
+  useNewUrlParser: true,
+  useFindAndModify: false,
+  useCreateIndex: true
 });
 
 // ROUTES
@@ -32,7 +34,8 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/mongoosescraper
 app.get("/", function (req, res) {
   db.Article.find({})
     .then(function (dbArticle) {
-      console.log(dbArticle);
+      // console.log(dbArticle);
+      console.log("Get request received for all articles.");
       res.render("index", {
         articles: dbArticle
       });
@@ -43,6 +46,9 @@ app.get("/", function (req, res) {
 });
 
 app.get("/scrape", function (req, res) {
+  db.Article.remove({ saved: false }, function(err) {
+    console.log("Unsaved articles removed.");
+  });
   axios.get("https://www.nintendolife.com/news").then(function (response) {
     var $ = cheerio.load(response.data);
     $(".item-wrap").each(function (i, element) {
@@ -78,17 +84,48 @@ app.get("/scrape", function (req, res) {
         .children(".heading")
         .children("a").attr("href");
       console.log(result.link);
+      result.saved = false;
 
       db.Article.create(result)
         .then(function (dbArticle) {
-          console.log(dbArticle);
+          // console.log(dbArticle);
+          console.log("Scrape request processed.");
+          res.redirect("/");
         })
         .catch(function (err) {
           console.log(err);
         });
     });
-    res.send("Scrape Complete"); // UPDATE THIS TO BE NOT UGLY
   });
+});
+
+app.get("/save/:id", function(req, res) {
+  db.Article.findOneAndUpdate({
+    _id: req.params.id
+  },{
+    saved: true
+  })
+  .then(function (dbArticle){
+      res.json(dbArticle)
+  })
+  .catch(function(err){
+    console.log("Error:");
+    console.log(err);
+  });
+});
+
+app.get("/unsave/:id", function(req, res) {
+  db.Article.findOneAndUpdate({
+    _id: req.params.id
+  },{
+    saved: false
+  })
+  .then(function (dbArticle){
+    res.json(dbArticle);
+  })
+  .catch(function(err){
+    console.log(err);
+  })
 });
 
 app.get("/articles", function (req, res) {

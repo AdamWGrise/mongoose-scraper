@@ -4,29 +4,68 @@ $.getJSON("/articles", function(data) {
   }
 });
 
-$(document).on("click", "p", function() {
-  $("#notes").empty();
-  var thisId = $(this).attr("data-id");
-  console.log(thisId);
-
+$("#scrape").on("click", function(e) {
+  e.preventDefault();
   $.ajax({
     method: "GET",
-    url: "/articles/" + thisId
+    url: "/scrape"
   })
-    .then(function(data) {
-      console.log(data);
-      $("#notes").append("<h2>" + data.title + "</h2>");
-      $("#notes").append("<input id='titleinput' name='title' >");
-      $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
-      $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
-
-      // REPLACE THIS WITH DISPLAYING ALL NOTES
-      if (data.note) {
-        $("#titleinput").val(data.note.title);
-        $("#bodyinput").val(data.note.body);
-      }
-    });
+  .then(function() {
+    window.location.replace("/");
+  })
 });
+
+$(".save-article").on("click", function(e) {
+  e.preventDefault();
+  var thisId = $(this).parents(".card").data("id");
+  console.log($(this).parents(".card").data("id"));
+  $.ajax({
+    method: "GET",
+    url: "/save/" + thisId,
+  })
+  .then(function() {
+    // update the page and stuff too
+  })
+});
+
+$(".unsave-article").on("click", function(e) {
+  e.preventDefault();
+  var thisId = $(this).parents(".card").data("id");
+  console.log($(this).parents(".card").data("id"));
+  $.ajax({
+    method: "GET",
+    url: "/unsave/" + thisId,
+  })
+  .then(function() {
+    // update the page and stuff too
+  })
+});
+
+
+
+// $(document).on("click", "p", function() {
+//   $("#notes").empty();
+//   var thisId = $(this).attr("data-id");
+//   console.log(thisId);
+
+//   $.ajax({
+//     method: "GET",
+//     url: "/articles/" + thisId
+//   })
+//     .then(function(data) {
+//       console.log(data);
+//       $("#notes").append("<h2>" + data.title + "</h2>");
+//       $("#notes").append("<input id='titleinput' name='title' >");
+//       $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
+//       $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
+
+//       // REPLACE THIS WITH DISPLAYING ALL NOTES
+//       if (data.note) {
+//         $("#titleinput").val(data.note.title);
+//         $("#bodyinput").val(data.note.body);
+//       }
+//     });
+// });
 
 // When you click the savenote button
 $(document).on("click", "#savenote", function() {
