@@ -25,6 +25,19 @@ var ArticleSchema = new Schema({
     type: Boolean,
     required: true,
     default: false
+  },
+  savedClass: {
+    type: String
+  },
+  saveButton: {
+    type: String
+  },
+  unsaveButton: {
+    type: String
+  },
+  note: {
+    type: Schema.Types.ObjectId,
+    ref: "Note"
   }
 });
 

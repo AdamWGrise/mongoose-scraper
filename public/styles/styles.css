@@ -1,15 +1,23 @@
 body {
     background-color: #122;
     color:#eee;
+    font-family: Dekko, 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
 }
 
 .jumbotron {
-    background-color: #244;
+    background-image:url("./bg.png");
+    padding-top: 10px;
+    padding-bottom:20px;
 }
 
 .card {
     max-width:16rem;
     display:inline-flex;
+}
+
+.nllogo {
+    max-width:50%;
+    min-width:200px;
 }
 
 .card-img-top {
@@ -24,8 +32,31 @@ body {
     color: #aaa;
 }
 
+.saved {
+    background-color: #353;
+}
+
+.card-button {
+    /* width:45px; */
+    padding: 4px;
+    font-size: 1.0rem;
+}
+
 #article-cards {
     text-align:center;
     display: inline-block;
     overflow: auto;
+}
+
+#scrape {
+    background-color: #353;
+    border: 3px solid #122;
+    box-shadow: #000 2px 3px 10px;
+    margin: 0 10px 0 0;
+}
+
+#clear {
+    background-color: #e60012;
+    border: 3px solid #660006;
+    box-shadow: #000 2px 3px 10px;
 }

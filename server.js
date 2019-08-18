@@ -34,7 +34,7 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/mongoosescraper
 app.get("/", function (req, res) {
   db.Article.find({})
     .then(function (dbArticle) {
-      // console.log(dbArticle);
+      console.log(dbArticle);
       console.log("Get request received for all articles.");
       res.render("index", {
         articles: dbArticle
@@ -54,52 +54,55 @@ app.get("/scrape", function (req, res) {
   axios.get("https://www.nintendolife.com/news").then(function (response) {
     var $ = cheerio.load(response.data);
     $(".item-wrap").each(function (i, element) {
-        var result = {};
-        result.title = $(this)
-          .children(".info")
-          .children(".info-wrap")
-          .children(".heading")
-          .children("a")
-          .children(".title").text();
-        console.log(result.title);
-        result.category = $(this)
-          .children(".info")
-          .children(".info-wrap")
-          .children(".heading")
-          .children("a")
-          .children(".category").text();
-        console.log(result.title);
-        result.description = $(this)
-          .children(".info")
-          .children(".info-wrap")
-          .children(".text").text();
-        console.log(result.description);
-        result.image = $(this)
-          .children(".image")
-          .children(".img")
-          .children("img").attr("src");
-        console.log(result.image);
-        result.link = "https://www.nintendolife.com/";
-        result.link += $(this)
-          .children(".info")
-          .children(".info-wrap")
-          .children(".heading")
-          .children("a").attr("href");
-        console.log(result.link);
-        result.saved = false;
+      var result = {};
+      result.title = $(this)
+        .children(".info")
+        .children(".info-wrap")
+        .children(".heading")
+        .children("a")
+        .children(".title").text();
+      console.log(result.title);
+      result.category = $(this)
+        .children(".info")
+        .children(".info-wrap")
+        .children(".heading")
+        .children("a")
+        .children(".category").text();
+      console.log(result.title);
+      result.description = $(this)
+        .children(".info")
+        .children(".info-wrap")
+        .children(".text").text();
+      console.log(result.description);
+      result.image = $(this)
+        .children(".image")
+        .children(".img")
+        .children("img").attr("src");
+      console.log(result.image);
+      result.link = "https://www.nintendolife.com/";
+      result.link += $(this)
+        .children(".info")
+        .children(".info-wrap")
+        .children(".heading")
+        .children("a").attr("href");
+      console.log(result.link);
+      result.saved = false;
+      result.savedClass = '';
+      result.saveButton = '';
+      result.unsaveButton = 'disabled';
 
-        db.Article.create(result)
-          .then(function (dbArticle) {
-            // console.log(dbArticle);
-            console.log("Scrape request processed.");
-          })
-          .catch(function (err) {
-            console.log(err);
-          });
-      })
-      .then(function () {
-        res.redirect("/");
-      });
+      db.Article.create(result)
+        .then(function (dbArticle) {
+          // console.log(dbArticle);
+          console.log("Scrape request processed.");
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+    })
+  })
+  .then(function () {
+    res.redirect("/");
   });
 });
 
@@ -118,7 +121,10 @@ app.get("/save/:id", function (req, res) {
   db.Article.findOneAndUpdate({
       _id: req.params.id
     }, {
-      saved: true
+      saved: true,
+      savedClass: 'saved',
+      saveButton: 'disabled',
+      unsaveButton: ''
     })
     .then(function (dbArticle) {
       res.json(dbArticle)
@@ -133,7 +139,10 @@ app.get("/unsave/:id", function (req, res) {
   db.Article.findOneAndUpdate({
       _id: req.params.id
     }, {
-      saved: false
+      saved: false,
+      savedClass: '',
+      unsaveButton: 'disabled',
+      saveButton: ''
     })
     .then(function (dbArticle) {
       res.json(dbArticle);
@@ -168,15 +177,15 @@ app.get("/articles/:id", function (req, res) {
 
 app.post("/articles/:id", function (req, res) {
   db.Note.create(req.body)
-    // .then(function (dbNote) {
-    //   return db.Article.findOneAndUpdate({
-    //     _id: req.params.id
-    //   }, {
-    //     note: dbNote._id
-    //   }, {
-    //     new: true
-    //   });
-    // })
+    .then(function (dbNote) {
+      return db.Article.findOneAndUpdate({
+        _id: req.params.id
+      }, {
+        note: dbNote._id
+      }, {
+        new: true
+      });
+    })
     .then(function (dbArticle) {
       res.json(dbArticle);
       console.log('======POST RESPONSE======');

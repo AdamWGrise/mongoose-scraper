@@ -3,8 +3,8 @@
     <div class="row">
         <div class="col-12">
             <div class="jumbotron">
-                <h1>NintendoLife Scraper</h1>
-                <button class="btn btn-danger" id="scrape">Scrapey scrapey</button>
+                <h1>Unofficial<br><img class="nllogo" src="./styles/nllogo.png"><br>Article Scraper</h1>
+                <button class="btn btn-secondary" id="scrape">Scrapey scrapey</button>
                 <button class="btn btn-secondary" id="clear">Clear unsaved</button>
             </div>
         </div>
@@ -12,28 +12,34 @@
 
     <div class="row">
         <div class="col-12">
+            {{#if articles}}
             <div id="article-cards">
                 {{#each articles}}
-                <div class="card bg-dark text-white mb-3" data-id="{{this._id}}">
+                <div class="card bg-dark text-white mb-3" data-id="{{this._id}}" id="{{this._id}}">
                     <img class="card-img-top" src="{{this.image}}" alt="cardImg">
-                    <div class="card-body">
+                    <div class="card-body {{this.savedClass}}">
                         <h6 class="card-title"><span class="category">({{this.category}})</span> {{this.title}}</h6>
-                        <h6>Saved: {{this.saved}}</h6>
                         <p class="card-text">{{this.description}}</p>
-                        <a href="{{this.link}}" target="_blank" class="btn btn-secondary btn-sm">Visit</a>
-                        <a href="/" class="btn btn-secondary btn-sm save-article">Save</a>
-                        <a href="/" class="btn btn-secondary btn-sm unsave-article">Unsave</a>
+                        <a href="{{this.link}}" target="_blank" class="btn btn-secondary btn-sm card-button">Visit</a>
+                        <a href="/"
+                            class="btn btn-secondary btn-sm card-button save-article {{this.saveButton}}">Save</a>
+                        <a href="/"
+                            class="btn btn-secondary btn-sm card-button unsave-article {{this.unsaveButton}}">Unsave</a>
+                        <a href="#noteModal" rel="modal:open" class="btn btn-secondary btn-sm card-button note-button">Note</a>
+                    </div>
+                    <div id="noteModal" class="modal">
+                        <h4 id="titleText">{{this.title}}</h4>
+                        <h5 id="commentField">commentField</h5>
+                        <a href="#" rel="modal:close">Close</a>
                     </div>
                 </div>
-                {{/each}}
+            {{/each}}
             </div>
+            {{else}}
+            <div>
+                <span>No articles right now. Click the "Scrapey scrapey" button up above to get started.</span>
+            </div>
+            {{/if}}
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-12">
-            <footer class="footer">Created by Adam Grise, 2019</footer>
-        </div>
-    </div>
-
 </div>
