@@ -19,21 +19,25 @@
                     <img class="card-img-top" src="{{this.image}}" alt="cardImg">
                     <div class="card-body {{this.savedClass}}">
                         <h6 class="card-title"><span class="category">({{this.category}})</span> {{this.title}}</h6>
+                        <div class="hidden submitNote">
+                            <h6>Note title:</h6>
+                            <textarea type="text" class="title-input"></textarea><br>
+                            <h6>Note details:</h6>
+                            <textarea type="text" class="note-input"></textarea><br>
+                            <button class="btn btn-dark submit-note" type="submit">Save Note</button>
+                        </div>
                         <p class="card-text">{{this.description}}</p>
+                        <div class="buttons-area">
                         <a href="{{this.link}}" target="_blank" class="btn btn-secondary btn-sm card-button">Visit</a>
                         <a href="/"
                             class="btn btn-secondary btn-sm card-button save-article {{this.saveButton}}">Save</a>
                         <a href="/"
                             class="btn btn-secondary btn-sm card-button unsave-article {{this.unsaveButton}}">Unsave</a>
-                        <a href="#noteModal" rel="modal:open" class="btn btn-secondary btn-sm card-button note-button">Note</a>
-                    </div>
-                    <div id="noteModal" class="modal">
-                        <h4 id="titleText">{{this.title}}</h4>
-                        <h5 id="commentField">commentField</h5>
-                        <a href="#" rel="modal:close">Close</a>
+                        <a class="btn btn-secondary btn-sm card-button note-button">Note</a>
+                        </div>
                     </div>
                 </div>
-            {{/each}}
+                {{/each}}
             </div>
             {{else}}
             <div>

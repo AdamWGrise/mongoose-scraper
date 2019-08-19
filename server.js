@@ -176,6 +176,8 @@ app.get("/articles/:id", function (req, res) {
 });
 
 app.post("/articles/:id", function (req, res) {
+  console.log("========= req =========");
+  console.log(req.body);
   db.Note.create(req.body)
     .then(function (dbNote) {
       return db.Article.findOneAndUpdate({

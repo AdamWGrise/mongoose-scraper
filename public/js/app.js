@@ -1,30 +1,32 @@
-$("#scrape").on("click", function(e) {
+var noteId = '';
+
+$("#scrape").on("click", function (e) {
   e.preventDefault();
   $.ajax({
-    method: "GET",
-    url: "/scrape"
-  })
-  .then(function() {
-    window.location.replace("/");
-  })
+      method: "GET",
+      url: "/scrape"
+    })
+    .then(function () {
+      window.location.replace("/");
+    })
 });
 
-$("#clear").on("click", function(e) {
+$("#clear").on("click", function (e) {
   e.preventDefault();
   $.ajax({
-    method: "GET",
-    url: "/clear"
-  })
-  .then(function() {
-    window.location.replace("/");
-  })
+      method: "GET",
+      url: "/clear"
+    })
+    .then(function () {
+      window.location.replace("/");
+    })
 });
 
 
 // MISC FUNCTIONS
 
 colorBg = item => {
-  if(item.saved){
+  if (item.saved) {
     $(this).addClass("saved");
   } else {
     $(this).removeClass("saved")
@@ -32,86 +34,87 @@ colorBg = item => {
 }
 
 
-$(".save-article").on("click", function(e) {
+$(".save-article").on("click", function (e) {
   e.preventDefault();
   var thisId = $(this).parents(".card").data("id");
   $.ajax({
-    method: "GET",
-    url: "/save/" + thisId,
-  })
-  .then(function() {
-    $("#"+thisId).children("div.card-body").addClass("saved");
-    $("#"+thisId).children("div.card-body").children(".save-article").addClass("disabled");
-    $("#"+thisId).children("div.card-body").children(".unsave-article").removeClass("disabled");
-    // update the page and stuff too
-  })
+      method: "GET",
+      url: "/save/" + thisId,
+    })
+    .then(function () {
+      $("#" + thisId).children("div.card-body").addClass("saved");
+      $("#" + thisId).children("div.card-body").children(".save-article").addClass("disabled");
+      $("#" + thisId).children("div.card-body").children(".unsave-article").removeClass("disabled");
+      // update the page and stuff too
+    })
 });
 
-$(".unsave-article").on("click", function(e) {
+$(".unsave-article").on("click", function (e) {
   e.preventDefault();
   var thisId = $(this).parents(".card").data("id");
   $.ajax({
-    method: "GET",
-    url: "/unsave/" + thisId,
-  })
-  .then(function() {
-    $("#"+thisId).children("div.card-body").removeClass("saved");
-    $("#"+thisId).children("div.card-body").children(".save-article").removeClass("disabled");
-    $("#"+thisId).children("div.card-body").children(".unsave-article").addClass("disabled");
-    // update the page and stuff too
-  })
+      method: "GET",
+      url: "/unsave/" + thisId,
+    })
+    .then(function () {
+      $("#" + thisId).children("div.card-body").removeClass("saved");
+      $("#" + thisId).children("div.card-body").children(".save-article").removeClass("disabled");
+      $("#" + thisId).children("div.card-body").children(".unsave-article").addClass("disabled");
+      // update the page and stuff too
+    })
 });
 
-$(".note-button").on("click", function(e) {
+$(".note-button").on("click", function (e) {
   e.preventDefault();
-  // $("#notes").empty();
-  // var thisId = $(this).attr("data-id");
-  var thisId = $(this).parents(".card").data("id");
+  noteId = $(this).parents(".card").data("id");
+  console.log(noteId);
+  var noteFields = $(this).parents(".card-body").children(".submitNote");
+
+  $(this).parents(".card-body").children(".card-text").addClass("hidden");
+  $(this).parents(".card-body").children(".buttons-area").addClass("hidden");
+  $(this).parents(".card-body").children(".submitNote").removeClass("hidden");
+  $(".note-button").addClass("disabled");
 
   $.ajax({
-    method: "GET",
-    url: "/articles/" + thisId
-  })
-    .then(function(data) {
+      method: "GET",
+      url: "/articles/" + noteId
+    })
+    .then(function (data) {
       console.log(data);
-      $("#notes").append("<h2>" + data.title + "</h2>");
-      $("#notes").append("<input id='titleinput' name='title' >");
-      $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
-      $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
+      var note = data.note.note;
+      var title = data.note.title;
 
-      if (data.note) {
-        $("#titleinput").val(data.note.title);
-        $("#bodyinput").val(data.note.body);
-      }
+      noteFields.children("textarea#title-input").text(title);
+      noteFields.children("textarea#note-input").text(note);
     });
 });
 
-// When you click the savenote button
-$(document).on("click", "#savenote", function() {
-  // Grab the id associated with the article from the submit button
-  var thisId = $(this).attr("data-id");
+$(".submit-note").on("click", function (e) {
+  e.preventDefault()
+  var noteTitle = $(this).parents("div.submitNote").children("textarea#title-input").val();
+  var noteNote = $(this).parents("div.submitNote").children("textarea#note-input").val();
 
-  // Run a POST request to change the note, using what's entered in the inputs
+  $(this).parents(".card-body").children(".card-text").removeClass("hidden");
+  $(this).parents(".card-body").children(".buttons-area").removeClass("hidden");
+  $(this).parents(".card-body").children(".submitNote").addClass("hidden");
+  $(".note-button").removeClass("disabled");
+
+  console.log(noteTitle);
+  console.log(noteNote);
+  console.log(noteId);
+
   $.ajax({
-    method: "POST",
-    url: "/articles/" + thisId,
-    data: {
-      // Value taken from title input
-      title: $("#titleinput").val(),
-      // Value taken from note textarea
-      body: $("#bodyinput").val(),
-      article: thisId
-    }
-  })
+      method: "POST",
+      url: "/articles/" + noteId,
+      data: {
+        title: noteTitle,
+        note: noteNote,
+        article: noteId
+      }
+    })
     // With that done
-    .then(function(data) {
+    .then(function (data) {
       // Log the response
       console.log(data);
-      // Empty the notes section
-      $("#notes").empty();
     });
-
-  // Also, remove the values entered in the input and textarea for note entry
-  $("#titleinput").val("");
-  $("#bodyinput").val("");
 });

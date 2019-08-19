@@ -4,6 +4,10 @@ body {
     font-family: Dekko, 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
 }
 
+.hidden {
+    display:none;
+}
+
 .jumbotron {
     background-image:url("./bg.png");
     padding-top: 10px;
@@ -59,4 +63,26 @@ body {
     background-color: #e60012;
     border: 3px solid #660006;
     box-shadow: #000 2px 3px 10px;
+}
+
+/* MODAL */
+#noteModal {
+    color:#ddd;
+    max-height: 50%;
+    background-color: #122;
+}
+
+#title-input {
+    width:100%;
+    margin-bottom:15px;
+}
+
+#note-input {
+    width:100%;
+    height: 4rem;
+    margin-bottom:15px;
+}
+
+#submit-note {
+    margin-bottom:10px;
 }
