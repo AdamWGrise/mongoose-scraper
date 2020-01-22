@@ -5,8 +5,8 @@ Wanna skip all the ads and junk, and get to the good stuff on Nintendo's latest 
 This is an app that will use web scraping techniques to obtain links and basic info from the news items on the front page of NintendoLife.com's website, then display it in a list of cards.
 
 From there, there are a couple things you can do:
-1. You can 'save' individual articles to view later. This will give the card a green highlight to signify that it's saved.
-2. You can add a comment to each article to keep track of individual notes that you may have for the article.
+1. You can 'save' individual articles to view later. This will give the card a green highlight to signify that it's saved. This simply saves server-side with no accounts or sockets, so it saves for all viewers of the page.
+2. You can add a comment to each article to keep track of individual notes that you may have for the article. Also applies to all viewers.
 
 ## How does it work?
 On the front end, a little bit of Bootstrap and jQuery for a basic and relatively clean layout. Handlebars is the technology used to control the views, so there's ultimately only one main page with some templated components.
